@@ -1,0 +1,7 @@
+---
+applications:
+- name: helloapp
+  memory: 256M
+  random-route: true
+  path: target/helloapp-1.0.1.war
+
