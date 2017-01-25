@@ -17,6 +17,7 @@ else
 	export org=$4
 	export space=$5
 	export appName=$6
+	rm -rf logs
 	mkdir logs
 	cf login -a ${hostURL} --skip-ssl-validation -u ${userId} -p ${password} -o ${org} -s ${space}
 	cf push --hostname ${appName} > logs/deployLogs.log 2>&1
