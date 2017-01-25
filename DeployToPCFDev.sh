@@ -20,6 +20,23 @@ else
 	rm -rf logs
 	mkdir logs
 	cf login -a ${hostURL} --skip-ssl-validation -u ${userId} -p ${password} -o ${org} -s ${space}
-	cf push --hostname ${appName} > logs/deployLogs.log 2>&1
-	cf logs ${appName} --recent > logs/appRecentLogs.log 2>&1
+	cnt=1
+	while [ $cnt -lt 4 ] 
+	do
+		echo "" >> logs/deployLogs.log
+		echo "***************Deploy attempt $cnt******************" >> logs/deployLogs.log
+		echo "" >> logs/deployLogs.log
+		cf push --hostname ${appName} >> logs/deployLogs.log 2>&1
+		
+		if [ 1 -ge `cat logs/deployLogs.log | grep 'App started' | wc -l` ]; then
+			cf logs ${appName} --recent > logs/appRecentLogs.log 2>&1
+			echo "App deployed and started successfully"
+			echo "Check logs/deployLogs.log and logs/appRecentLogs.log files for more details"
+			echo "Exit 1 with Success"
+			exit 1
+		fi
+		cnt=`expr $cnt + 1`
+	done
+	echo "Exit 2 with error"
+	exit 2
 fi
